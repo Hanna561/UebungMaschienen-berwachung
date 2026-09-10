@@ -5,52 +5,80 @@
         static void Main(string[] args)
         {
             List<int> Temperaturen = [];
+            bool programmBeenden;
+            do
+            {
+                AnzeigeHauptmenü();
+                string Auswahl = AuswahlImAnzeigeHauptmenü();
+                programmBeenden= Programmauswahl(Temperaturen, Auswahl);
+
+            } while (!programmBeenden);
+        }
+
+        private static bool Programmauswahl(List<int> Temperaturen, string Auswahl)
+        {
+            bool programmBeenden = false;
+            if (Auswahl == "1")
+            {
+                TemperaturEingabe(Temperaturen);
+            }else if (Auswahl == "2")
+            {
+
+            }else if (Auswahl == "0")
+            {
+                programmBeenden = true;
+            }
+
+
+            return programmBeenden;
+
+        }
+
+        private static void TemperaturEingabe(List<int> Temperaturen)
+        {
             int Temperatur;
             bool IstEineTemperatur;
             bool TestObBeenden;
 
-            Hauptmenü();
-
-            string Auswahl = Console.ReadLine();
-            if (Auswahl == "1")
+            Console.Clear();
+            Console.WriteLine("-- 1 - Temperatur erfassen --");
+            Console.WriteLine();
+            Console.WriteLine("Temperatur eingeben (x zum Beenden):");
+            do
             {
-                Console.Clear();
-                Console.WriteLine("-- 1 - Temperatur erfassen --");
-                Console.WriteLine();
-                Console.WriteLine("Temperatur eingeben (x zum Beenden):");
-                do
-                {
-                    string EingabeTemperatur = Console.ReadLine();
+                string EingabeTemperatur = Console.ReadLine();
 
-                    if (EingabeTemperatur == "x")
+                if (EingabeTemperatur == "x")
+                {
+                    TestObBeenden = true;
+                }
+                else
+                {
+                    TestObBeenden = false;
+
+                    IstEineTemperatur = int.TryParse(EingabeTemperatur, out Temperatur);
+
+
+
+                    if (!IstEineTemperatur)
                     {
-                        TestObBeenden = true;
-                    } 
+                        Console.WriteLine("Das war keine Temperatur! Bitte erneut eingeben.");
+                    }
                     else
                     {
-                        TestObBeenden = false;
-
-                        IstEineTemperatur = int.TryParse(EingabeTemperatur, out Temperatur);
-
-
-
-                        if (!IstEineTemperatur)
-                        {
-                            Console.WriteLine("Das war keine Temperatur! Bitte erneut eingeben.");
-                        }
-                        else
-                        {
-                            Temperaturen.Add(Temperatur);
-                        }
+                        Temperaturen.Add(Temperatur);
                     }
+                }
 
-                } while (!TestObBeenden);
-
-            }
-
+            } while (!TestObBeenden);
         }
 
-        private static void Hauptmenü()
+        private static string AuswahlImAnzeigeHauptmenü()
+        {
+            return Console.ReadLine();
+        }
+
+        private static void AnzeigeHauptmenü()
         {
             Console.WriteLine("=== Maschienenüberwachung ===");
             Console.WriteLine();
