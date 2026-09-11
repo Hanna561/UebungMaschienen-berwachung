@@ -1,4 +1,6 @@
-﻿namespace UebungMaschienenueberwachung
+﻿using System.ComponentModel.Design;
+
+namespace UebungMaschienenueberwachung
 {
     internal class Program
     {
@@ -33,6 +35,41 @@
             else if (Auswahl == "3")
             {
                 GrenzwertePruefen(Temperaturen, anzahlElemente);
+            }
+            else if (Auswahl == "4")
+            {
+                int TemperaturSucheAusgabe;
+                bool TemperaturSucheBeenden = false;
+                Console.WriteLine("--- 4 - Temperatur suchen ---");
+                Console.WriteLine();
+
+
+                do
+                {
+                    int i = 0;
+                    string TemperaturSucheEingabe = Console.ReadLine();
+                    int.TryParse(TemperaturSucheEingabe, out TemperaturSucheAusgabe);
+                    if (TemperaturSucheEingabe == "x")
+                    {
+                        TemperaturSucheBeenden = true;
+                    }
+                    else
+                    {
+                        int TemperaturAusListe = Temperaturen[i];
+                        
+                        if (TemperaturSucheAusgabe == TemperaturAusListe)
+                        {
+                            Console.WriteLine("Temperatur gefunden");
+                        }
+                        else
+                        {
+
+                            Console.WriteLine("Temperatur nicht gefunden");
+                        }
+                    }
+                    i++;
+                } while (!TemperaturSucheBeenden);
+
             }
             else if (Auswahl == "0")
             {
@@ -134,8 +171,18 @@
                     }
                     else
                     {
-
-                        Temperaturen.Add(Temperatur);     
+                        if (Temperatur <= 120 && Temperatur >= 0)
+                        {
+                            Temperaturen.Add(Temperatur);
+                            if (Temperatur > 90)
+                            {
+                                Console.WriteLine("KRITISCH! Maschine sofort prüfen!");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Fehler: Temperatur außerhalb des zulässigen Bereichs.");
+                        }
                     }
                 }
 
@@ -156,6 +203,7 @@
             Console.WriteLine("1 - Temperatur erfassen");
             Console.WriteLine("2 - Statistik anzeigen");
             Console.WriteLine("3 - Grenzwerte prüfen");
+            Console.WriteLine("4 - Temperatur suchen");
             Console.WriteLine("0 - Program beenden");
             Console.WriteLine();
             Console.Write("Auswahl:  ");
