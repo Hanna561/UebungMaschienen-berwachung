@@ -4,8 +4,6 @@
     {
         static void Main(string[] args)
         {
-            int i = 0;
-            int Summe = 0;
             List<int> Temperaturen = [];
             bool programmBeenden;
             do
@@ -48,6 +46,7 @@
 
         private static void GrenzwertePruefen(List<int> Temperaturen, int anzahlElemente)
         {
+            Console.Clear();
             int WarnungZaeler = 0;
             for (int i = 0; i < anzahlElemente; i++)
             {
@@ -67,6 +66,8 @@
                 }
             }
             Console.WriteLine("Anzahl Warnungen: " + WarnungZaeler);
+            Console.WriteLine("------------------------------");
+            Console.WriteLine();
         }
 
         private static void StatistikAnzeige(List<int> Temperaturen, ref int Summe, ref int min, ref int max)
@@ -97,6 +98,8 @@
             Console.WriteLine("Durchschnitt: " + Durchschnitt + " °C");
             Console.WriteLine("Minimum: " + min + " °C");
             Console.WriteLine("Maximum: " + max + " °C");
+            Console.WriteLine("------------------------------");
+            Console.WriteLine();
         }
 
         private static void TemperaturEingabe(List<int> Temperaturen)
@@ -137,6 +140,8 @@
                 }
 
             } while (!TestObBeenden);
+            Console.WriteLine("------------------------------");
+            Console.WriteLine();
         }
 
         private static string AuswahlImAnzeigeHauptmenü()
