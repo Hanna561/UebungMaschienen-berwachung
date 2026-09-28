@@ -7,6 +7,16 @@ namespace UebungMaschienenueberwachung
         static void Main(string[] args)
         {
             List<int> Temperaturen = [];
+
+            if (System.IO.File.Exists("Temperaturen.txt"))
+            {
+                var dateiInhalt = System.IO.File.ReadAllLines("Temperaturen.txt");
+                foreach (var line in dateiInhalt)
+                {
+                    Temperaturen.Add(int.Parse(line));
+                }
+            }
+            
             bool programmBeenden;
             do
             {
@@ -20,62 +30,28 @@ namespace UebungMaschienenueberwachung
         private static bool Programmauswahl(List<int> Temperaturen, string Auswahl)
         {
             bool programmBeenden = false;
-            int Summe = 0;
-            int min = int.MaxValue;
-            int max = int.MinValue;
-            // Diese Variable benutzt du nur bei GrenzwertePruefen. 
-            // Du könntest überlegen, ob du diese Variable direkt in der Methode GrenzwertePruefen deklarierst, da sie nur dort verwendet wird.
-            // Oder noch einfacher in der Schleife selbst direkt den Temperaturen.Count zu verwenden.
-            int anzahlElemente = Temperaturen.Count;
+            
+            
+            
             if (Auswahl == "1")
             {
                 TemperaturEingabe(Temperaturen);
             }
             else if (Auswahl == "2")
             {
-                // Schau mal ob du die Werte wirklich per ref übergeben musst oder nicht doch direkt in der Methode deklariert werden können
-                StatistikAnzeige(Temperaturen, ref Summe, ref min, ref max);
+                StatistikAnzeige(Temperaturen);
             }
             else if (Auswahl == "3")
             {
-                GrenzwertePruefen(Temperaturen, anzahlElemente);
+                GrenzwertePruefen(Temperaturen);
             }
             else if (Auswahl == "4")
             {
-                int TemperaturSucheAusgabe;
-                bool TemperaturSucheBeenden = false;
-                Console.WriteLine("--- 4 - Temperatur suchen ---");
-                Console.WriteLine();
-
-                // Du könntest hier überlegen, ob du die Suche nach der Temperatur in einer eigenen Methode kapselst
-                // Außerdem wäre zu überlegen, ob man die Suche nach der Temperatur effizienter gestalten kann, z.B. durch eine for Schleife über die gesamte Liste.
-                // Man muss aktuell nach jedem Durchlauf auch wieder eine Temperatur eingeben oder 'x' zum Beenden.
-                do
-                {
-                    int i = 0;
-                    string TemperaturSucheEingabe = Console.ReadLine();
-                    int.TryParse(TemperaturSucheEingabe, out TemperaturSucheAusgabe);
-                    if (TemperaturSucheEingabe == "x")
-                    {
-                        TemperaturSucheBeenden = true;
-                    }
-                    else
-                    {
-                        int TemperaturAusListe = Temperaturen[i];
-                        
-                        if (TemperaturSucheAusgabe == TemperaturAusListe)
-                        {
-                            Console.WriteLine("Temperatur gefunden");
-                        }
-                        else
-                        {
-
-                            Console.WriteLine("Temperatur nicht gefunden");
-                        }
-                    }
-                    i++;
-                } while (!TemperaturSucheBeenden);
-
+                TemperaturenSuchen(Temperaturen);
+            }
+            else if (Auswahl == "5")
+            {
+                TemperaturenSpeichern(Temperaturen);
             }
             else if (Auswahl == "0")
             {
@@ -87,15 +63,51 @@ namespace UebungMaschienenueberwachung
 
         }
 
+        private static void TemperaturenSpeichern(List<int> temperaturen)
+        {
+            System.IO.File.WriteAllLines("Temperaturen.txt", temperaturen.Select(x => x.ToString()));
+        }
+
+        private static void TemperaturenSuchen(List<int> Temperaturen)
+        {
+            int TemperaturSucheAusgabe;
+            bool TemperaturSucheBeenden = false;
+            Console.Clear();
+            Console.WriteLine("--- 4 - Temperatur suchen ---");
+            Console.WriteLine();
+            Console.WriteLine("Temperatur eingeben (x zum Beenden):");
+            Console.WriteLine();
+
+            // Du könntest hier überlegen, ob du die Suche nach der Temperatur in einer eigenen Methode kapselst
+            // Man muss aktuell nach jedem Durchlauf auch wieder eine Temperatur eingeben oder 'x' zum Beenden.
+            do
+            {
+
+                string TemperaturSucheEingabe = Console.ReadLine();
+                int.TryParse(TemperaturSucheEingabe, out TemperaturSucheAusgabe);
+                if (TemperaturSucheEingabe == "x" || TemperaturSucheEingabe == "X")
+                {
+                    TemperaturSucheBeenden = true;
+                }
+                else
+                {
+                    var TemperaturAusListe = Temperaturen.Where(temp => temp == TemperaturSucheAusgabe).ToList();
+                    Console.WriteLine($"Deine Temperatur ist so oft vorhanden: {TemperaturAusListe.Count}");
+                }
+
+            } while (!TemperaturSucheBeenden);
+        }
+
         // GrenzwertePruefen hat aktuell 2 Aufgaben:
         // 1. Prüfen, ob die Temperaturen innerhalb der Grenzwerte liegen.
         // 2. Ausgabe der Kategorie der Temperatur (Kühl, Normal, Warnung)
         // Hinweis: Diese Methode verändert die Konsolenausgabe direkt und gibt keine Werte zurück.
-        private static void GrenzwertePruefen(List<int> Temperaturen, int anzahlElemente)
+        private static void GrenzwertePruefen(List<int> Temperaturen)
         {
             Console.Clear();
             int WarnungZaeler = 0;
-            for (int i = 0; i < anzahlElemente; i++)
+           
+            for (int i = 0; i < Temperaturen.Count; i++)
             {
                 int TemperaturAusListe = Temperaturen[i];
                 if (TemperaturAusListe < 50)
@@ -124,8 +136,11 @@ namespace UebungMaschienenueberwachung
         // 3. Bestimmung des Maximums.
         // 4. Berechnung und Ausgabe des Durchschnitts.
         // Hinweis: Diese Methode verändert die Konsolenausgabe direkt und gibt keine Werte zurück.
-        private static void StatistikAnzeige(List<int> Temperaturen, ref int Summe, ref int min, ref int max)
+        private static void StatistikAnzeige(List<int> Temperaturen)
         {
+            int Summe = 0;
+            int min = int.MaxValue;
+            int max = int.MinValue;
             double Durchschnitt;
             int AnzahlTemperaturenFuerSatistik = 0;
             int anzahlElemente = Temperaturen.Count;
@@ -159,33 +174,30 @@ namespace UebungMaschienenueberwachung
         private static void TemperaturEingabe(List<int> Temperaturen)
         {
             int Temperatur;
-            // Der Name ist nicht optimal, besser wäre z.B. "IstEineGueltigeTemperatur".
-            bool IstEineTemperatur;
-            // Der Name ist nicht optimal, da er nicht eindeutig beschreibt, dass es sich um die Abbruchbedingung handelt.
-            // Besser wäre z.B. "AbbruchbedingungErreicht" oder "EingabeBeenden".
-            bool TestObBeenden;
+            bool IstEineGueltigeTemperatur;
+            bool EingabeBeenden;
 
             Console.Clear();
             Console.WriteLine("-- 1 - Temperatur erfassen --");
             Console.WriteLine();
             Console.WriteLine("Temperatur eingeben (x zum Beenden):");
+            Console.WriteLine();
             do
             {
                 string EingabeTemperatur = Console.ReadLine();
-                // Ein großes "X" würde aktuell nicht als Abbruch erkannt werden.
-                if (EingabeTemperatur == "x")
+                if (EingabeTemperatur == "x" || EingabeTemperatur == "X")
                 {
-                    TestObBeenden = true;
+                    EingabeBeenden = true;
                 }
                 else
                 {
-                    TestObBeenden = false;
+                    EingabeBeenden = false;
 
-                    IstEineTemperatur = int.TryParse(EingabeTemperatur, out Temperatur);
+                    IstEineGueltigeTemperatur = int.TryParse(EingabeTemperatur, out Temperatur);
 
 
 
-                    if (!IstEineTemperatur)
+                    if (!IstEineGueltigeTemperatur)
                     {
                         Console.WriteLine("Das war keine Temperatur! Bitte erneut eingeben.");
                     }
@@ -208,7 +220,7 @@ namespace UebungMaschienenueberwachung
                     }
                 }
 
-            } while (!TestObBeenden);
+            } while (!EingabeBeenden);
             Console.WriteLine("------------------------------");
             Console.WriteLine();
         }
@@ -226,6 +238,7 @@ namespace UebungMaschienenueberwachung
             Console.WriteLine("2 - Statistik anzeigen");
             Console.WriteLine("3 - Grenzwerte prüfen");
             Console.WriteLine("4 - Temperatur suchen");
+            Console.WriteLine("5 - Temperaturen Speichern");
             Console.WriteLine("0 - Program beenden");
             Console.WriteLine();
             Console.Write("Auswahl:  ");
