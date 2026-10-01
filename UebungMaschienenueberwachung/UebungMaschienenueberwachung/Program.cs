@@ -21,41 +21,56 @@ namespace UebungMaschienenueberwachung
             do
             {
                 AnzeigeHauptmenü();
-                string AuswahlAusDemHauptmenü = AuswahlImAnzeigeHauptmenü();
+                int AuswahlAusDemHauptmenü = int.Parse(AuswahlImAnzeigeHauptmenü());
                 programmBeenden = Programmauswahl(Temperaturen, AuswahlAusDemHauptmenü);
 
             } while (!programmBeenden);
         }
+        public enum AuswahlProgarmm
+        {
+            TemperaturEingabeAuswahl1 = 1,
+            StatistikAnzeigeAuswahl2 = 2,
+            GrenzwertePruefenAuswahl3 = 3,
+            TemperaturenSuchenAuswahl4 = 4,
+            TemperaturenSpeichernAuswahl5 = 5,
+            programmBeendenAuswahl = 0
+        }
 
-        private static bool Programmauswahl(List<int> Temperaturen, string Auswahl)
+        private static bool Programmauswahl(List<int> Temperaturen, int Auswahl)
         {
             bool programmBeenden = false;
             
             
             
-            if (Auswahl == "1")
+            if (Auswahl == (int)AuswahlProgarmm.TemperaturEingabeAuswahl1)
             {
                 TemperaturEingabe(Temperaturen);
             }
-            else if (Auswahl == "2")
+            else if (Auswahl == (int)AuswahlProgarmm.StatistikAnzeigeAuswahl2)
             {
                 StatistikAnzeige(Temperaturen);
             }
-            else if (Auswahl == "3")
+            else if (Auswahl == (int)AuswahlProgarmm.GrenzwertePruefenAuswahl3)
             {
                 GrenzwertePruefen(Temperaturen);
             }
-            else if (Auswahl == "4")
+            else if (Auswahl == (int)AuswahlProgarmm.TemperaturenSuchenAuswahl4)
             {
                 TemperaturenSuchen(Temperaturen);
             }
-            else if (Auswahl == "5")
+            else if (Auswahl == (int)AuswahlProgarmm.TemperaturenSpeichernAuswahl5)
             {
                 TemperaturenSpeichern(Temperaturen);
             }
-            else if (Auswahl == "0")
+            else if (Auswahl == (int)AuswahlProgarmm.programmBeendenAuswahl)
             {
                 programmBeenden = true;
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("Diesen Menüpunkt gibt es nicht! Bitte erneut eingeben.");
+                Console.WriteLine();
             }
 
 
@@ -73,7 +88,9 @@ namespace UebungMaschienenueberwachung
             int TemperaturSucheAusgabe;
             bool TemperaturSucheBeenden = false;
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("--- 4 - Temperatur suchen ---");
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("Temperatur eingeben (x zum Beenden):");
             Console.WriteLine();
@@ -104,6 +121,10 @@ namespace UebungMaschienenueberwachung
         private static void GrenzwertePruefen(List<int> Temperaturen)
         {
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("-- 3 - Grenzwerte prüfen --");
+            Console.ResetColor();
+            Console.WriteLine();
             int WarnungZähler = 0;
            
             for (int i = 0; i < Temperaturen.Count; i++)
@@ -160,7 +181,9 @@ namespace UebungMaschienenueberwachung
             }
             Durchschnitt = Summe / AnzahlTemperaturenFürSatistik;
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("-- 2 - Statistik anzeigen --");
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("Anzahl Messungen: " + AnzahlTemperaturenFürSatistik);
             Console.WriteLine("Durchschnitt: " + Durchschnitt + " °C");
@@ -180,7 +203,9 @@ namespace UebungMaschienenueberwachung
             bool EingabeBeenden;
 
             Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("-- 1 - Temperatur erfassen --");
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("Temperatur eingeben (x zum Beenden):");
             Console.WriteLine();
@@ -232,7 +257,9 @@ namespace UebungMaschienenueberwachung
 
         private static void AnzeigeHauptmenü()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("=== Maschienenüberwachung ===");
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("1 - Temperatur erfassen");
             Console.WriteLine("2 - Statistik anzeigen");
