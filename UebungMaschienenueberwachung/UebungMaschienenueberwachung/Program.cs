@@ -21,8 +21,8 @@ namespace UebungMaschienenueberwachung
             do
             {
                 AnzeigeHauptmenü();
-                string Auswahl = AuswahlImAnzeigeHauptmenü();
-                programmBeenden = Programmauswahl(Temperaturen, Auswahl);
+                string AuswahlAusDemHauptmenü = AuswahlImAnzeigeHauptmenü();
+                programmBeenden = Programmauswahl(Temperaturen, AuswahlAusDemHauptmenü);
 
             } while (!programmBeenden);
         }
@@ -78,7 +78,6 @@ namespace UebungMaschienenueberwachung
             Console.WriteLine("Temperatur eingeben (x zum Beenden):");
             Console.WriteLine();
 
-            // Du könntest hier überlegen, ob du die Suche nach der Temperatur in einer eigenen Methode kapselst
             // Man muss aktuell nach jedem Durchlauf auch wieder eine Temperatur eingeben oder 'x' zum Beenden.
             do
             {
@@ -105,7 +104,7 @@ namespace UebungMaschienenueberwachung
         private static void GrenzwertePruefen(List<int> Temperaturen)
         {
             Console.Clear();
-            int WarnungZaeler = 0;
+            int WarnungZähler = 0;
            
             for (int i = 0; i < Temperaturen.Count; i++)
             {
@@ -121,10 +120,10 @@ namespace UebungMaschienenueberwachung
                 else
                 {
                     Console.WriteLine(TemperaturAusListe + " °C -> Warnung");
-                    WarnungZaeler++;
+                    WarnungZähler++;
                 }
             }
-            Console.WriteLine("Anzahl Warnungen: " + WarnungZaeler);
+            Console.WriteLine("Anzahl Warnungen: " + WarnungZähler);
             Console.WriteLine("------------------------------");
             Console.WriteLine();
         }
@@ -142,14 +141,14 @@ namespace UebungMaschienenueberwachung
             int min = int.MaxValue;
             int max = int.MinValue;
             double Durchschnitt;
-            int AnzahlTemperaturenFuerSatistik = 0;
+            int AnzahlTemperaturenFürSatistik = 0;
             int anzahlElemente = Temperaturen.Count;
             for (int i = 0; i < anzahlElemente; i++)
             {
 
                 int TemperaturAusListe = Temperaturen[i];
                 Summe += TemperaturAusListe;
-                AnzahlTemperaturenFuerSatistik++;
+                AnzahlTemperaturenFürSatistik++;
                 if (TemperaturAusListe < min)
                 {
                     min = TemperaturAusListe;
@@ -159,11 +158,11 @@ namespace UebungMaschienenueberwachung
                     max = TemperaturAusListe;
                 }
             }
-            Durchschnitt = Summe / AnzahlTemperaturenFuerSatistik;
+            Durchschnitt = Summe / AnzahlTemperaturenFürSatistik;
             Console.Clear();
             Console.WriteLine("-- 2 - Statistik anzeigen --");
             Console.WriteLine();
-            Console.WriteLine("Anzahl Messungen: " + AnzahlTemperaturenFuerSatistik);
+            Console.WriteLine("Anzahl Messungen: " + AnzahlTemperaturenFürSatistik);
             Console.WriteLine("Durchschnitt: " + Durchschnitt + " °C");
             Console.WriteLine("Minimum: " + min + " °C");
             Console.WriteLine("Maximum: " + max + " °C");
@@ -173,6 +172,9 @@ namespace UebungMaschienenueberwachung
 
         private static void TemperaturEingabe(List<int> Temperaturen)
         {
+            const int obergrenzeFürMöglicheTemperaturen = 120;
+            const int untergrenzeFürMöglicheTemperaturen = 0;
+            const int abHierKritischeTemperatur = 90;
             int Temperatur;
             bool IstEineGueltigeTemperatur;
             bool EingabeBeenden;
@@ -203,12 +205,10 @@ namespace UebungMaschienenueberwachung
                     }
                     else
                     {
-                        // Solche direkte nutzung von Zahlenwerten ist nicht optimal. Besser wäre es, Konstanten zu verwenden.
-                        // Die kann man dann an einer zentralen Stelle ändern, falls sich die Grenzwerte ändern sollten.
-                        if (Temperatur <= 120 && Temperatur >= 0)
+                        if (Temperatur <= obergrenzeFürMöglicheTemperaturen && Temperatur >= untergrenzeFürMöglicheTemperaturen)
                         {
                             Temperaturen.Add(Temperatur);
-                            if (Temperatur > 90)
+                            if (Temperatur > abHierKritischeTemperatur)
                             {
                                 Console.WriteLine("KRITISCH! Maschine sofort prüfen!");
                             }
